@@ -1,4 +1,4 @@
-package chapter1_3
+package chapter1_3.lx1_3_9
 
 import edu.princeton.cs.algs4.StdIn
 

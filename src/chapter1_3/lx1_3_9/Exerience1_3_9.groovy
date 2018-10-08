@@ -10,5 +10,6 @@ class Exerience1_3_9 {
         String expression = new AutoCompleteExpression().autoComplete(expressionMissLeftParenthesis);
 
         printf "补全后的表达式:" + expression;
+
     }
 }

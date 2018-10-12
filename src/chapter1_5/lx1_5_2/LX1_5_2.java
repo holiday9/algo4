@@ -1,4 +1,4 @@
-package chapter1_5.lx1_5_1;
+package chapter1_5.lx1_5_2;
 
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
@@ -13,17 +13,19 @@ import java.io.FileNotFoundException;
  *     触点、连接、连通分量（分量）
  * </p>
  */
-public class UFQuick1_5_1 {
+public class LX1_5_2 {
     int id[];
     int count;
-    long accessCount = 0;
+    private int accessCount;
 
-    public UFQuick1_5_1(int N) {
+    public LX1_5_2(int N) {
         id = new int[N];
         for (int i = 0;i < N;i++) {
             id[i] = i;
         }
         count = N;
+
+        StdOut.println("init count = " + count);
     }
 
     public int count() {
@@ -31,51 +33,45 @@ public class UFQuick1_5_1 {
     }
 
     public void union(int p, int q) {
-        accessCount = 0;
+        int pRootID = find(p);
+        int qRootID = find(q);
 
-        int pID = find(p);
-        int qID = find(q);
+        if (pRootID == qRootID) return;
 
-        if (pID == qID) {
-            printId(p, q);
-            printlnAccessCount(p, q);
-            return;
-        }
+        id[pRootID] = qRootID;
 
-        for (int i = 0;i < id.length;i++) {
+        accessCount++;
 
-            accessCount++;
-            if (id[i] == pID) {
-                id[i] = qID;
-
-                accessCount++;
-            }
-        }
         count--;
-
-
-    }
-
-    private void printlnAccessCount(int p, int q) {
-        StdOut.println("\naccess count = " + accessCount + "");
-    }
-
-    private void printId(int p, int q) {
-        StdOut.print("id content:");
-
-        for (int idTemp : id) {
-            StdOut.print(idTemp + ",");
-        }
     }
 
     public int find(int p){
+        int i = p;
+
+        while(id[i] != i) {
+            i = id[i];
+
+            accessCount += 2;
+        }
+
         accessCount++;
 
-        return id[p];
+        return i;
     }
 
     public boolean connected(int p, int q){
         return find(p) == find(q);
+    }
+
+    public void resetStatics() {
+        accessCount = 0;
+    }
+
+    public void printlnContent() {
+        for (int element : id) {
+            StdOut.print(element + ",");
+        }
+        StdOut.println();
     }
 
     public static void main(String args[]) {
@@ -92,11 +88,13 @@ public class UFQuick1_5_1 {
          */
         int N = StdIn.readInt();
 
-        UFQuick1_5_1 uf = new UFQuick1_5_1(N);
+        LX1_5_2 uf = new LX1_5_2(N);
 
         while (!StdIn.isEmpty()) {
             int p = StdIn.readInt();
             int q = StdIn.readInt();
+
+            uf.resetStatics();
 
             if (uf.connected(p, q)) {
                 continue;
@@ -104,9 +102,11 @@ public class UFQuick1_5_1 {
                 uf.union(p, q);
             }
 
-            StdOut.println("--------------------" + p + "," + q + "------------------");
-            uf.printId(p, q);
-            uf.printlnAccessCount(p, q);
+            StdOut.println("-----------" + p + "," + q + "------------------");
+//            print accesscount in this turn;
+            StdOut.println("access count:" + uf.accessCount);
+            uf.printlnContent();
         }
+        StdOut.println("commponent count : " + uf.count());
     }
 }
